@@ -28,6 +28,7 @@ namespace AntiAdminAbuse
             if (recipient != null)
             {
                 UnturnedChat.Say(recipient, message);
+                return;
             }
 
             // If public message
