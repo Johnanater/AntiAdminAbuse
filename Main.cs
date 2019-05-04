@@ -247,67 +247,71 @@ namespace AntiAdminAbuse
         void OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
             // Remove any of those pesky errors
-            if (murderer.ToString().Equals("0") || player == null || murderer == Provider.server) return;
-
-            UnturnedPlayer untKiller = UnturnedPlayer.FromCSteamID(murderer);
-
-            if (Utils.IsActive(untKiller))
+            if (player?.Player != null)
             {
-                if (untKiller.GodMode)
+                UnturnedPlayer untKiller = UnturnedPlayer.FromCSteamID(murderer);
+
+                if (Utils.IsActive(untKiller))
                 {
-                    if (Config.PlayerDamagePublicWarn)
+                    if (untKiller.GodMode)
                     {
-                        Utils.Announce(Translate("public_killed_in_god", untKiller.DisplayName));
+                        if (Config.PlayerDamagePublicWarn)
+                        {
+                            Utils.Announce(Translate("public_killed_in_god", untKiller.DisplayName));
+                        }
                     }
-                }
-                if (untKiller.VanishMode)
-                {
-                    if (Config.PlayerDamagePublicWarn)
+                    if (untKiller.VanishMode)
                     {
-                        Utils.Announce(Translate("public_killed_in_vanish", untKiller.DisplayName, player.DisplayName));
+                        if (Config.PlayerDamagePublicWarn)
+                        {
+                            Utils.Announce(Translate("public_killed_in_vanish", untKiller.DisplayName, player.DisplayName));
+                        }
                     }
                 }
             }
+
+
         }
 
         void OnPlayerDamaged(Player player, ref EDeathCause cause, ref ELimb limb, ref CSteamID killer, ref Vector3 direction, ref float damage, ref float times, ref bool canDamage)
         {
-            // Remove any of those pesky errors
-            if (killer.ToString().Equals("0") || player == null || killer == Provider.server) return;
-
             UnturnedPlayer untKiller = UnturnedPlayer.FromCSteamID(killer);
             UnturnedPlayer untVictim = UnturnedPlayer.FromPlayer(player);
 
-            if (Utils.IsActive(untKiller))
+            // Remove any of those pesky errors
+            if (untKiller?.Player != null)
             {
-                if (untKiller.GodMode)
+                if (Utils.IsActive(untKiller))
                 {
-                    if (Config.PlayerDamagePublicWarn)
+                    if (untKiller.GodMode)
                     {
-                        Utils.Announce(Translate("public_damaged_in_god", untKiller.DisplayName));
+                        if (Config.PlayerDamagePublicWarn)
+                        {
+                            Utils.Announce(Translate("public_damaged_in_god", untKiller.DisplayName));
+                        }
+                        if (Config.PlayerDamagePrivateWarn)
+                        {
+                            Utils.Announce(Translate("private_damaged_in_god", untVictim.DisplayName, untKiller), untKiller);
+                        }
+                        if (Config.BlockPlayerDamage)
+                        {
+                            canDamage = false;
+                        }
                     }
-                    if (Config.PlayerDamagePrivateWarn)
+                    if (untKiller.VanishMode)
                     {
-                        Utils.Announce(Translate("private_damaged_in_god", untVictim.DisplayName, untKiller), untKiller);
-                    }
-                    if (Config.BlockPlayerDamage)
-                    {
-                        canDamage = false;
-                    }
-                }
-                if (untKiller.VanishMode)
-                {
-                    if (Config.PlayerDamagePublicWarn)
-                    {
-                        Utils.Announce(Translate("public_damaged_in_vanish", untKiller.DisplayName, untVictim.DisplayName));
-                    }
-                    if (Config.PlayerDamagePrivateWarn)
-                    {
-                        Utils.Announce(Translate("private_damaged_in_vanish", untVictim.DisplayName), untKiller);
-                    }
-                    if (Config.BlockPlayerDamage)
-                    {
-                        canDamage = false;
+                        if (Config.PlayerDamagePublicWarn)
+                        {
+                            Utils.Announce(Translate("public_damaged_in_vanish", untKiller.DisplayName, untVictim.DisplayName));
+                        }
+                        if (Config.PlayerDamagePrivateWarn)
+                        {
+                            Utils.Announce(Translate("private_damaged_in_vanish", untVictim.DisplayName), untKiller);
+                        }
+                        if (Config.BlockPlayerDamage)
+                        {
+                            canDamage = false;
+                        }
                     }
                 }
             }
