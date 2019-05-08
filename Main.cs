@@ -246,11 +246,11 @@ namespace AntiAdminAbuse
 
         void OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            // Remove any of those pesky errors
-            if (player?.Player != null)
-            {
-                UnturnedPlayer untKiller = UnturnedPlayer.FromCSteamID(murderer);
+            UnturnedPlayer untKiller = UnturnedPlayer.FromCSteamID(murderer);
 
+            // Remove any of those pesky errors
+            if (untKiller?.Player != null)
+            {
                 if (Utils.IsActive(untKiller))
                 {
                     if (untKiller.GodMode)
