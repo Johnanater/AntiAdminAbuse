@@ -21,6 +21,7 @@ namespace AntiAdminAbuse
         public bool PlayerDamagePrivateWarn;
         public bool PlayerDamagePublicWarn;
         public bool BlockPlayerDamage;
+        public bool BlockBuildableDamage;
 
         public bool DontAnnounceCommandsInVanish;
 
@@ -46,6 +47,7 @@ namespace AntiAdminAbuse
             PlayerDamagePrivateWarn = true;
             PlayerDamagePublicWarn = false;
             BlockPlayerDamage = true;
+            BlockBuildableDamage = true;
 
             DontAnnounceCommandsInVanish = false;
 

@@ -25,12 +25,19 @@ namespace AntiAdminAbuse
             UnturnedPlayerEvents.OnPlayerDeath += OnPlayerDeath;
             DamageTool.playerDamaged += OnPlayerDamaged;
 
+            StructureManager.onDamageStructureRequested += OnDamageStructureRequested;
+            BarricadeManager.onDamageBarricadeRequested += OnDamageBarricadeRequested;
+
         }
 
         protected override void Unload()
         {
             UnturnedPlayerEvents.OnPlayerChatted -= OnPlayerChatted;
+            UnturnedPlayerEvents.OnPlayerDeath -= OnPlayerDeath;
             DamageTool.playerDamaged -= OnPlayerDamaged;
+
+            StructureManager.onDamageStructureRequested -= OnDamageStructureRequested;
+            BarricadeManager.onDamageBarricadeRequested -= OnDamageBarricadeRequested;
         }
 
         void OnPlayerChatted(UnturnedPlayer player, ref Color color, string message, EChatMode chatMode, ref bool cancel)
@@ -41,6 +48,7 @@ namespace AntiAdminAbuse
 
                 string[] messageSplit = message.Split(' ');
                 string command = messageSplit[0];
+                int msgLength = messageSplit.Length;
 
                 if (Config.DontAnnounceCommandsInVanish && player.VanishMode)
                 {
@@ -73,7 +81,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/heal") && player.HasPermission("heal") && Config.AnnounceHeal)
                 {
-                    if (messageSplit.Length > 1)
+                    if (msgLength > 1)
                     {
                         UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -91,7 +99,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/tp") && player.HasPermission("tp") && Config.AnnounceTp)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -117,7 +125,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/tphere") && player.HasPermission("tphere") && Config.AnnounceTphere)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -129,7 +137,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/kick") && player.HasPermission("kick") && Config.AnnounceKick)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -141,7 +149,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/ban") && player.HasPermission("ban") && Config.AnnounceBan)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -153,7 +161,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/slay") && player.HasPermission("slay") && Config.AnnounceSlay)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -165,7 +173,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/spy") && player.HasPermission("spy") && Config.AnnounceSpy)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -177,7 +185,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/admin") && player.HasPermission("admin") && Config.AnnounceAdmin)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
 
                     UnturnedPlayer target = UnturnedPlayer.FromName(messageSplit[1]);
 
@@ -189,17 +197,17 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/airdrop") && player.HasPermission("airdrop") && Config.AnnounceAirdrop)
                 {
-                    if (messageSplit.Length < 1) return;
+                    if (msgLength < 1) return;
                     Utils.Announce(Translate("announce_airdrop", player.DisplayName));
                 }
 
                 else if (command.Equals("/i") && player.HasPermission("i") && Config.AnnounceItem)
                 {
-                    if (messageSplit.Length < 2) return;
+                    if (msgLength < 2) return;
 
                     int AssetCount = 1;
 
-                    if (messageSplit.Length > 2)
+                    if (msgLength > 2)
                     {
                         int.TryParse(messageSplit[2].Replace("\"", ""), out AssetCount);
                     }
@@ -223,7 +231,7 @@ namespace AntiAdminAbuse
 
                 else if (command.Equals("/v") && player.HasPermission("v") && Config.AnnounceVehicle)
                 {
-                    if (messageSplit.Length < 2) return;
+                    if (msgLength < 2) return;
 
                     try
                     {
@@ -269,8 +277,6 @@ namespace AntiAdminAbuse
                     }
                 }
             }
-
-
         }
 
         void OnPlayerDamaged(Player player, ref EDeathCause cause, ref ELimb limb, ref CSteamID killer, ref Vector3 direction, ref float damage, ref float times, ref bool canDamage)
@@ -317,6 +323,44 @@ namespace AntiAdminAbuse
             }
         }
 
+        void OnDamageStructureRequested(CSteamID instigatorSteamID, Transform structureTransform, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
+        {
+            UnturnedPlayer untPlayer = UnturnedPlayer.FromCSteamID(instigatorSteamID);
+
+            if (untPlayer?.Player != null)
+            {
+                if (Utils.IsActive(untPlayer) && Config.BlockBuildableDamage)
+                {
+                    if (untPlayer.GodMode || untPlayer.VanishMode)
+                    {
+                        shouldAllow = false;
+                        Utils.Announce(Translate("private_damaged_buildable_in_vanish"), untPlayer);
+                        return;
+                    }
+                }
+            }
+            shouldAllow = true;
+        }
+
+        void OnDamageBarricadeRequested(CSteamID instigatorSteamID, Transform barricadeTransform, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
+        {
+            UnturnedPlayer untPlayer = UnturnedPlayer.FromCSteamID(instigatorSteamID);
+
+            if (untPlayer?.Player != null)
+            {
+                if (Utils.IsActive(untPlayer) && Config.BlockBuildableDamage)
+                {
+                    if (untPlayer.GodMode || untPlayer.VanishMode)
+                    {
+                        shouldAllow = false;
+                        Utils.Announce(Translate("private_damaged_buildable_in_vanish"), untPlayer);
+                        return;
+                    }
+                }
+            }
+            shouldAllow = true;
+        }
+
         public override TranslationList DefaultTranslations => new TranslationList()
         {
             {"announce_enable_god", "{0} has enabled god mode!"},
@@ -342,7 +386,9 @@ namespace AntiAdminAbuse
             {"public_damaged_in_god", "{0} has damaged {1} while in god mode!"},
             {"private_damaged_in_god", "You damaged {0} in god mode!"},
             {"public_damaged_in_vanish", "{0} has damaged {1} while in vanish!"},
-            {"private_damaged_in_vanish", "You damaged {0} in vanish!"}
+            {"private_damaged_in_vanish", "You damaged {0} in vanish!"},
+            {"private_damaged_buildable_in_vanish", "You can't damage buildables in vanish!"},
+            {"private_damaged_buildable_in_god", "You can't damage buildables in god mode!"}
         };
     }
 }

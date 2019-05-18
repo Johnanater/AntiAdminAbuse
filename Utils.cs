@@ -7,14 +7,6 @@ namespace AntiAdminAbuse
 {
     public class Utils
     {
-        // Because translations are annoying in Rocket
-        public string Translate(string translation, string arg)
-        {
-            string[] args = arg.Split(',');
-
-            return Main.Instance.Translations.Instance.Translate(translation, args);
-        }
-
         // Annoyances
         public static void Announce(string message)
         {
