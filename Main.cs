@@ -366,7 +366,7 @@ namespace AntiAdminAbuse
             {"announce_enable_god", "{0} has enabled god mode!"},
             {"announce_disable_god", "{0} has disabled god mode!"},
             {"announce_enable_vanish", "{0} has enabled vanish!"},
-            {"announce_enable_vanish", "{0} has disabled vanish!"},
+            {"announce_disable_vanish", "{0} has disabled vanish!"},
             {"announce_heal_other", "{0} has healed {1}!"},
             {"announce_heal_self", "{0} has healed themselves!"},
             {"announce_tp", "{0} has teleported to {1}"},
