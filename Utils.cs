@@ -41,9 +41,9 @@ namespace AntiAdminAbuse
             Using the node "antiadminabuse.bypass" will bypass this
             or by changing "IgnoreAdmins" in the config to true
         */
-        public static bool IsActive(UnturnedPlayer player)
+        public static bool IsActive(UnturnedPlayer untPlayer)
         {
-            if (player.IsAdmin)
+            if (untPlayer?.IsAdmin ?? false)
             {
                 if (Main.Config.IgnoreAdmins)
                 {
@@ -51,9 +51,9 @@ namespace AntiAdminAbuse
                 }
                 return true;
             }
-            if (player.HasPermission("antiadminabuse.active"))
+            if (untPlayer?.HasPermission("antiadminabuse.active") ?? false)
             {
-                if (player.HasPermission("antiadminabuse.bypass"))
+                if (untPlayer.HasPermission("antiadminabuse.bypass"))
                 {
                     return false;
                 }
