@@ -7,6 +7,7 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using UnityEngine;
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace AntiAdminAbuse
 {
@@ -15,6 +16,8 @@ namespace AntiAdminAbuse
         public static Main Instance;
         public static Configuration Config;
         public static Utils Utils;
+
+        public const string Version = "1.0.1";
 
         protected override void Load()
         {
@@ -28,6 +31,7 @@ namespace AntiAdminAbuse
             StructureManager.onDamageStructureRequested += OnDamageStructureRequested;
             BarricadeManager.onDamageBarricadeRequested += OnDamageBarricadeRequested;
 
+            Logger.Log($"AntiAdminAbuse by Johnanater, version: {Version}");
         }
 
         protected override void Unload()
