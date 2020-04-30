@@ -17,7 +17,7 @@ namespace AntiAdminAbuse
         public static Configuration Config;
         public static Utils Utils;
 
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         protected override void Load()
         {
@@ -51,7 +51,7 @@ namespace AntiAdminAbuse
                 if (message == null) return;
 
                 string[] messageSplit = message.Split(' ');
-                string command = messageSplit[0];
+                string command = messageSplit[0].ToLower();
                 int msgLength = messageSplit.Length;
 
                 if (Config.DontAnnounceCommandsInVanish && player.VanishMode)
@@ -59,7 +59,7 @@ namespace AntiAdminAbuse
                     return;
                 }
 
-                if (command.Equals("/god") && player.HasPermission("god") && Config.AnnounceGod)
+                if (command.Contains("/god") && player.HasPermission("god") && Config.AnnounceGod)
                 {   
                     if (player.GodMode)
                     {
@@ -71,7 +71,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/vanish") && player.HasPermission("vanish") && Config.AnnounceVanish)
+                else if (command.Contains("/vanish") && player.HasPermission("vanish") && Config.AnnounceVanish)
                 {
                     if (player.VanishMode)
                     {
@@ -83,7 +83,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/heal") && player.HasPermission("heal") && Config.AnnounceHeal)
+                else if (command.Contains("/heal") && player.HasPermission("heal") && Config.AnnounceHeal)
                 {
                     if (msgLength > 1)
                     {
@@ -101,7 +101,7 @@ namespace AntiAdminAbuse
 
                 }
 
-                else if (command.Equals("/tp") && player.HasPermission("tp") && Config.AnnounceTp)
+                else if (command.Contains("/tp") && player.HasPermission("tp") && Config.AnnounceTp)
                 {
                     if (msgLength < 1) return;
 
@@ -127,7 +127,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/tphere") && player.HasPermission("tphere") && Config.AnnounceTphere)
+                else if (command.Contains("/tphere") && player.HasPermission("tphere") && Config.AnnounceTphere)
                 {
                     if (msgLength < 1) return;
 
@@ -139,7 +139,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/kick") && player.HasPermission("kick") && Config.AnnounceKick)
+                else if (command.Contains("/kick") && player.HasPermission("kick") && Config.AnnounceKick)
                 {
                     if (msgLength < 1) return;
 
@@ -151,7 +151,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/ban") && player.HasPermission("ban") && Config.AnnounceBan)
+                else if (command.Contains("/ban") && player.HasPermission("ban") && Config.AnnounceBan)
                 {
                     if (msgLength < 1) return;
 
@@ -163,7 +163,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/slay") && player.HasPermission("slay") && Config.AnnounceSlay)
+                else if (command.Contains("/slay") && player.HasPermission("slay") && Config.AnnounceSlay)
                 {
                     if (msgLength < 1) return;
 
@@ -175,7 +175,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/spy") && player.HasPermission("spy") && Config.AnnounceSpy)
+                else if (command.Contains("/spy") && player.HasPermission("spy") && Config.AnnounceSpy)
                 {
                     if (msgLength < 1) return;
 
@@ -187,7 +187,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/admin") && player.HasPermission("admin") && Config.AnnounceAdmin)
+                else if (command.Contains("/admin") && player.HasPermission("admin") && Config.AnnounceAdmin)
                 {
                     if (msgLength < 1) return;
 
@@ -199,13 +199,13 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/airdrop") && player.HasPermission("airdrop") && Config.AnnounceAirdrop)
+                else if (command.Contains("/airdrop") && player.HasPermission("airdrop") && Config.AnnounceAirdrop)
                 {
                     if (msgLength < 1) return;
                     Utils.Announce(Translate("announce_airdrop", player.DisplayName));
                 }
 
-                else if (command.Equals("/i") && player.HasPermission("i") && Config.AnnounceItem)
+                else if (command.Contains("/i") && player.HasPermission("i") && Config.AnnounceItem)
                 {
                     if (msgLength < 2) return;
 
@@ -233,7 +233,7 @@ namespace AntiAdminAbuse
                     }
                 }
 
-                else if (command.Equals("/v") && player.HasPermission("v") && Config.AnnounceVehicle)
+                else if (command.Contains("/v") && player.HasPermission("v") && Config.AnnounceVehicle)
                 {
                     if (msgLength < 2) return;
 
